@@ -11,12 +11,19 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * HelloWorlds View
+ * HelloWorld View
  *
  * @since  0.0.1
  */
-class HelloWorldViewHelloWorlds extends JViewLegacy
+class HelloWorldViewHelloWorld extends JViewLegacy
 {
+    /**
+     * View form
+     *
+     * @var         form
+     */
+    protected $form = null;
+
     /**
      * Display the Hello World view
      *
@@ -24,20 +31,11 @@ class HelloWorldViewHelloWorlds extends JViewLegacy
      *
      * @return  void
      */
-    function display($tpl = null)
+    public function display($tpl = null)
     {
-
-        // Get application
-        $app = JFactory::getApplication();
-        $context = "helloworld.list.admin.helloworld";
-        // Get data from the model
-        $this->items			= $this->get('Items');
-        $this->pagination		= $this->get('Pagination');
-        $this->state			= $this->get('State');
-        $this->filter_order 	= $app->getUserStateFromRequest($context.'filter_order', 'filter_order', 'greeting', 'cmd');
-        $this->filter_order_Dir = $app->getUserStateFromRequest($context.'filter_order_Dir', 'filter_order_Dir', 'asc', 'cmd');
-        $this->filterForm    	= $this->get('FilterForm');
-        $this->activeFilters 	= $this->get('ActiveFilters');
+        // Get the Data
+        $this->form = $this->get('Form');
+        $this->item = $this->get('Item');
 
         // Check for errors.
         if (count($errors = $this->get('Errors')))
@@ -47,7 +45,8 @@ class HelloWorldViewHelloWorlds extends JViewLegacy
             return false;
         }
 
-        // Set the toolbar and number of found items
+
+        // Set the toolbar
         $this->addToolBar();
 
         // Display the template
@@ -66,17 +65,28 @@ class HelloWorldViewHelloWorlds extends JViewLegacy
      */
     protected function addToolBar()
     {
-        $title = JText::_('COM_HELLOWORLD_MANAGER_HELLOWORLDS');
+        $input = JFactory::getApplication()->input;
 
-        if ($this->pagination->total)
+        // Hide Joomla Administrator Main menu
+        $input->set('hidemainmenu', true);
+
+        $isNew = ($this->item->id == 0);
+
+        if ($isNew)
         {
-            $title .= "<span style='font-size: 0.5em; vertical-align: middle;'>(" . $this->pagination->total . ")</span>";
+            $title = JText::_('COM_HELLOWORLD_MANAGER_HELLOWORLD_NEW');
+        }
+        else
+        {
+            $title = JText::_('COM_HELLOWORLD_MANAGER_HELLOWORLD_EDIT');
         }
 
         JToolBarHelper::title($title, 'helloworld');
-        JToolBarHelper::deleteList('', 'helloworlds.delete');
-        JToolBarHelper::editList('helloworld.edit');
-        JToolBarHelper::addNew('helloworld.add');
+        JToolBarHelper::save('helloworld.save');
+        JToolBarHelper::cancel(
+            'helloworld.cancel',
+            $isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE'
+        );
     }
     /**
      * Method to set up the document properties
@@ -85,7 +95,9 @@ class HelloWorldViewHelloWorlds extends JViewLegacy
      */
     protected function setDocument()
     {
+        $isNew = ($this->item->id < 1);
         $document = JFactory::getDocument();
-        $document->setTitle(JText::_('COM_HELLOWORLD_ADMINISTRATION'));
+        $document->setTitle($isNew ? JText::_('COM_HELLOWORLD_HELLOWORLD_CREATING') :
+            JText::_('COM_HELLOWORLD_HELLOWORLD_EDITING'));
     }
 }
