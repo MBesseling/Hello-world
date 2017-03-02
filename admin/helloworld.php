@@ -14,10 +14,14 @@ defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addStyleDeclaration('.icon-helloworld {background-image: url(../media/com_helloworld/images/Tux-16x16.png);}');
 
+// Require helper file
+JLoader::register('HelloWorldHelper', JPATH_COMPONENT . '/helpers/helloworld.php');
+
 // Get an instance of the controller prefixed by HelloWorld
 $controller = JControllerLegacy::getInstance('HelloWorld');
 
 // Perform the Request task
+$input = JFactory::getApplication()->input;
 $controller->execute(JFactory::getApplication()->input->get('task'));
 
 // Redirect if set by the controller

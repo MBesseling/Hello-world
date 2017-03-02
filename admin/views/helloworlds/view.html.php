@@ -24,6 +24,7 @@ class HelloWorldViewHelloWorlds extends JViewLegacy
      *
      * @return  void
      */
+
     function display($tpl = null)
     {
 
@@ -46,6 +47,9 @@ class HelloWorldViewHelloWorlds extends JViewLegacy
 
             return false;
         }
+
+        // Set the submenu
+        HelloWorldHelper::addSubmenu('helloworlds');
 
         // Set the toolbar and number of found items
         $this->addToolBar();
@@ -74,9 +78,9 @@ class HelloWorldViewHelloWorlds extends JViewLegacy
         }
 
         JToolBarHelper::title($title, 'helloworld');
-        JToolBarHelper::deleteList('', 'helloworlds.delete');
-        JToolBarHelper::editList('helloworld.edit');
         JToolBarHelper::addNew('helloworld.add');
+        JToolBarHelper::editList('helloworld.edit');
+        JToolBarHelper::deleteList('', 'helloworlds.delete');
     }
     /**
      * Method to set up the document properties
